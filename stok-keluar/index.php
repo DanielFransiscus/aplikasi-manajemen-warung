@@ -1,54 +1,22 @@
 <?php
 session_start();
 
-require __DIR__ . '/function.php';
-
-$categories = query("SELECT * FROM  kategori_barang order by id_kategori ASC");
-
-$nama_kategori = '';
-
-if (isset($_POST["insert"])) {
-  $nama_kategori = htmlspecialchars($_POST["nama_kategori"]);
-  if (!$nama_kategori) {
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit();
-  }
-  if (tambahKategori($_POST) > 0) {
-    setFlash('berhasil', 'ditambahkan', 'success');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  } else {
-    setFlash('gagal', 'ditambahkan', 'danger');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  }
+require '../function.php';
+if ($status == true && $id_role != 1) {
+  header('Location: ' . BASEURL . '/auth/login');
 }
 
-if (isset($_POST["update"])) {
-  //cek apakah data berhasil di tambahkan atau tidak
-  if (ubahKategori($_POST) > 0) {
-    setFlash('berhasil', 'diubah', 'success');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  } else {
-    setFlash('gagal', 'diubah', 'danger');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  }
-}
 
-if (isset($_POST["delete"])) {
-  //cek apakah data berhasil di tambahkan atau tidak
-  if (hapusKategori($_POST) > 0) {
-    setFlash('berhasil', 'dihapus', 'success');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  } else {
-    setFlash('gagal', 'dihapus', 'danger');
-    header('Location: ' . BASEURL . '/kategori-produk');
-    exit;
-  }
-}
+$barang = query("SELECT * FROM barang 
+   
+    
+    INNER JOIN barang_keluar
+    ON barang.id_barang = barang_keluar.id_barang
+    order by barang.id_barang ASC
+    ");
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -60,104 +28,106 @@ if (isset($_POST["delete"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Aplikasi Aplikasi POS">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Kategori Barang - Aplikasi POS</title>
+  <title>Stok Keluar - Aplikasi POS</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
+
 </head>
 
 <body class="sb-nav-fixed">
-  <!-- modal tambah - start-->
-  <div class="modal" id="myModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Tambah Kategori</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="<?php echo BASEURL; ?>/kategori-produk" method="post">
-          <!-- Modal body -->
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label" for="nama_kategori">Nama Kategori</label>
-              <input type="text" class="form-control" id="nama_kategori" placeholder="Masukkan nama kategori" name="nama_kategori" maxlength="10" required>
-            </div>
-          </div>
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="submit" name="insert" class="btn btn-primary">Simpan</button>
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <!-- modal tambah - end -->
-  <?php include 'partials/top_nav.php'; ?>
+
+
+
+
+
+  <?php include '../partials/top_nav.php'; ?>
+
+
+
+
+
+
   <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-      <?php include 'partials/sidebar.php'; ?>
+      <?php include '../partials/sidebar.php'; ?>
     </div>
+
+
+
+
+
     <div id="layoutSidenav_content">
       <main>
         <div class="container-fluid px-4">
           <div class="card mb-4 mt-4">
             <?php flash(); ?>
             <div class="card-header">
-              <h1>Kategori Produk</h1>
+              <h1>Stok Keluar</h1>
             </div>
             <div class="card-body">
+
               <table id="datatablesSimple">
                 <div class="clearfix">
-                  <button type="button" class="btn btn-primary mb-4 float-end" data-bs-toggle="modal" data-bs-target="#myModal">
-                    Tambah
-                  </button>
+
+
+                  <a class="btn btn-primary mb-4 float-end" href="<?php echo BASEURL; ?>/stok-keluar/tambah" role="button">Tambah</a>
+
                 </div>
+
                 <thead>
                   <tr>
                     <th>No</th>
-                    <th>Kategori</th>
+                    <th>Nama Barang</th>
+                    <th>Jumlah</th>
+                    <th>Tanggal & Waktu</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php $i = 1; ?>
-                  <?php foreach ($categories as $c) { ?>
+                  <?php foreach ($barang as $c) { ?>
                     <tr>
                       <td>
                         <?php echo $i; ?>
                       </td>
+
                       <td>
-                        <?php echo htmlentities($c['nama_kategori']); ?>
+                        <?php echo htmlentities($c['nama']); ?>
                       </td>
                       <td>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?php echo htmlentities($c['id_kategori']); ?>">Ubah</button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?php echo htmlentities($c['id_kategori']); ?>">Hapus</button>
+                        <?php echo htmlentities($c['jumlah']); ?>
+                      </td>
+                      <td>
+                        <?php echo htmlentities($c['tgl_keluar']); ?>
+                      </td>
+                      <td>
+
+                        <a class="btn btn-danger" href="<?php echo BASEURL; ?>/stok-keluar/hapus?id=<?php echo $c['id_keluar'] ?>" onclick="return confirm('Apakah anda yakin menghapus data ini ?')">Hapus</a>
+
                       </td>
                     </tr>
                     <?php $i++; ?>
                     <!-- model edit -->
-                    <div class="modal fade" id="edit<?php echo htmlentities($c['id_kategori']); ?>">
+                    <div class="modal fade" id="edit<?php echo $c['id_satuan']; ?>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <!-- Modal Header -->
                           <div class="modal-header">
                             <h4 class="modal-title">Simpan
-                              <?php echo htmlentities($c['nama_kategori']); ?>
+                              <?php echo $c['nama_satuan']; ?>
                             </h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="<?php echo BASEURL; ?>/kategori-produk" method="post">
+                          <form action="<?php echo BASEURL; ?>/stok-keluar" method="post">
                             <!-- Modal body -->
                             <div class="modal-body">
                               <div class="mb-3">
-                                <input type="hidden" name="id_kategori" value="<?php echo htmlentities($c['id_kategori']); ?>">
-                                <label class="form-label" for="nama_kategori">Nama Kategori</label>
-                                <input type="text" class="form-control" id="nama_kategori" placeholder="Masukkan nama kategori" name="nama_kategori" value="<?php echo htmlentities($c['nama_kategori']); ?>" maxlength="10" required>
+                                <input type="hidden" name="id_satuan" value="<?php echo $c['id_satuan']; ?>">
+                                <label class="form-label" for="nama_satuan">Nama Kategori</label>
+                                <input type="text" class="form-control" id="nama_satuan" placeholder="Masukkan nama kategori" name="nama_satuan" value="<?php echo $c['nama_satuan']; ?>" maxlength="10" required>
 
                               </div>
                             </div>
-
                             <!-- Modal footer -->
                             <div class="modal-footer">
                               <button type="submit" name="update" class="btn btn-success">Simpan</button>
@@ -168,17 +138,17 @@ if (isset($_POST["delete"])) {
                       </div>
                     </div>
                     <!-- modal delete -->
-                    <div class="modal fade" id="delete<?php echo htmlentities($c["id_kategori"]); ?>">
+                    <div class="modal fade" id="delete<?php echo $c["id_satuan"]; ?>">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
                             <h5 class="modal-title">Hapus</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="<?php echo BASEURL; ?>/kategori-produk" method="post">
+                          <form action="<?php echo BASEURL; ?>/stok-keluar" method="post">
                             <div class="modal-body">
                               <p>Apakah anda yakin menghapus kategori ini ?</p>
-                              <input type="hidden" name="id_kategori" value="<?php echo htmlentities($c['id_kategori']); ?>">
+                              <input type="hidden" name="id_satuan" value="<?php echo $c['id_satuan']; ?>">
                             </div>
                             <div class="modal-footer">
                               <button type="submit" name="delete" class="btn btn-danger">Hapus</button>

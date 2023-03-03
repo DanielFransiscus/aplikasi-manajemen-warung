@@ -4,7 +4,9 @@ session_start();
 
 require __DIR__ . '/function.php';
 
-
+if ($status == true && $id_role != 1 && $id_role != 2) {
+  header('Location: ' . BASEURL . '/auth/login');
+}
 
 $q1 = mysqli_query($conn, "Select Count(*) as total_brg From barang");
 $q = mysqli_fetch_assoc($q1);

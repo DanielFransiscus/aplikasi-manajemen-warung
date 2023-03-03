@@ -1,7 +1,9 @@
 <?php
 session_start();
 require __DIR__ . '/function.php';
-
+if ($status == true && $id_role != 1 && $id_role != 2) {
+  header('Location: ' . BASEURL . '/auth/login');
+}
 
 if (!isset($_GET['idtrx']) || $_GET['idtrx'] == "") {
   http_response_code(400);
@@ -16,13 +18,15 @@ if (!isset($_GET['idtrx']) || $_GET['idtrx'] == "") {
     $trx = mysqli_fetch_assoc($data);
     $detail = mysqli_query($conn, "SELECT * FROM transaksi_detail INNER JOIN barang ON transaksi_detail.id_barang = barang.id_barang WHERE transaksi_detail.id_transaksi = '$id_trx'");
 
+    $p = "SELECT * FROM  profil where id = 1";
+    $result = mysqli_query($conn, $p);
+    $q = mysqli_fetch_assoc($result);
 
 
-    $q = json_decode(file_get_contents(__DIR__ . '/profil.json'), true);
 
     if (!is_array($trx)) {
-      http_response_code(400);
-      echo "<h1><center>idtrx not found</center></h1>";
+      http_response_code(404);
+      include('404.php');
       exit();
     }
   } else {

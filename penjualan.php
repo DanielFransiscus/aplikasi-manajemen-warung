@@ -1,7 +1,9 @@
 <?php
 session_start();
 require __DIR__ . '/function.php';
-
+if ($status == true && $id_role != 1 && $id_role != 2) {
+  header('Location: ' . BASEURL . '/auth/login');
+}
 
 $customers = mysqli_query($conn, 'SELECT * FROM pelanggan');
 $sum = 0;
@@ -24,18 +26,20 @@ if (isset($_POST['trx'])) {
   $id_user = $_SESSION['id_user'];
   $id_pelanggan  = htmlspecialchars($_POST['id_pelanggan']);
   $kembali = $bayar - $total;
-  if (!$bayar) {
-    header('Location: ' . BASEURL . '/penjualan');
-    exit();
+
+
+  if (empty($bayar)) {
+    $errors['bayar'] = "Bayar wajib diisi";
+    $s['kosong'] = true;
   }
-  if (!$total) {
-    header('Location: ' . BASEURL . '/penjualan');
-    exit();
+  if (empty($total)) {
+    $errors['total'] = "Total wajib diisi";
+    $s['kosong'] = true;
   }
 
-  if (!$id_pelanggan) {
-    header('Location: ' . BASEURL . '/penjualan');
-    exit();
+  if (empty($id_pelanggan)) {
+    $errors['id_pelanggan'] = "Pelanggan wajib diisi";
+    $s['kosong'] = true;
   }
 
 
@@ -54,40 +58,46 @@ if (isset($_POST['trx'])) {
     }
   }
 
-  if ($bayar < $total) {
-    echo '<script>alert("Uang pelanggan tidak cukup");  window.history.back();</script>';
-  } else {
-    $sql = "INSERT INTO transaksi (id_transaksi, id_pelanggan, id_user, tgl_wkt, total, bayar, kembali) VALUES (NULL,'$id_pelanggan','$id_user', '$ind_timezone', '$total', '$bayar', '$kembali')";
 
-    $ins = mysqli_query($conn, $sql);
 
-    //mendapatkan id transaksi baru
-    $id_transaksi = mysqli_insert_id($conn);
-
-    foreach ($_SESSION['cart'] as $key => $value) {
-      $id_barang = $value['id'];
-      $harga = $value['harga'];
-      $qty = $value['qty'];
-      $tot = $harga * $qty;
-      $disk = $value['diskon'];
-
-      $data = mysqli_query($conn, "SELECT * FROM barang WHERE id_barang='$id_barang'");
-      $b = mysqli_fetch_assoc($data);
-      $stok = $b['stok'];
-      $jumlah = $value['qty'];
-      $sisa = $stok - $jumlah;
-      $sql2 = "INSERT INTO transaksi_detail (id_transaksi_detail, id_transaksi, id_barang, harga, qty, total, diskon) VALUES (NULL, '$id_transaksi', '$id_barang', '$harga', '$qty', '$tot', '$disk')";
-
-      $insert = mysqli_query($conn, $sql2);
-
-      if ($ins && $insert) {
-        //update stok
-        mysqli_query($conn, "UPDATE barang SET stok='$sisa' WHERE id_barang='$id_barang'");
-        $_SESSION['cart'] = [];
-        //redirect ke halaman transaksi selesai
-        header("location:" . BASEURL . "/transaksi-selesai?idtrx=" . "$id_transaksi");
+  if (is_array($s['kosong'])) {
+    if ($s['kosong'] == false) {
+      if ($bayar < $total) {
+        echo '<script>alert("Uang pelanggan tidak cukup");  window.history.back();</script>';
       } else {
-        echo "Error : " . mysqli_error($conn);
+        $sql = "INSERT INTO transaksi (id_transaksi, id_pelanggan, id_user, tgl_wkt, total, bayar, kembali) VALUES (NULL,'$id_pelanggan','$id_user', '$ind_timezone', '$total', '$bayar', '$kembali')";
+
+        $ins = mysqli_query($conn, $sql);
+
+        //mendapatkan id transaksi baru
+        $id_transaksi = mysqli_insert_id($conn);
+
+        foreach ($_SESSION['cart'] as $key => $value) {
+          $id_barang = $value['id'];
+          $harga = $value['harga'];
+          $qty = $value['qty'];
+          $tot = $harga * $qty;
+          $disk = $value['diskon'];
+
+          $data = mysqli_query($conn, "SELECT * FROM barang WHERE id_barang='$id_barang'");
+          $b = mysqli_fetch_assoc($data);
+          $stok = $b['stok'];
+          $jumlah = $value['qty'];
+          $sisa = $stok - $jumlah;
+          $sql2 = "INSERT INTO transaksi_detail (id_transaksi_detail, id_transaksi, id_barang, harga, qty, total, diskon) VALUES (NULL, '$id_transaksi', '$id_barang', '$harga', '$qty', '$tot', '$disk')";
+
+          $insert = mysqli_query($conn, $sql2);
+
+          if ($ins && $insert) {
+            //update stok
+            mysqli_query($conn, "UPDATE barang SET stok='$sisa' WHERE id_barang='$id_barang'");
+            $_SESSION['cart'] = [];
+            //redirect ke halaman transaksi selesai
+            header("location:" . BASEURL . "/transaksi-selesai?idtrx=" . "$id_transaksi");
+          } else {
+            echo "Error : " . mysqli_error($conn);
+          }
+        }
       }
     }
   }
@@ -134,7 +144,7 @@ if (isset($_POST['trx'])) {
               <form method="post" action="<?php echo BASEURL; ?>/keranjang-act">
                 <div class="mb-3">
                   <label class="form-label" for="id_barang">ID Barang</label>
-                  <input type="text" name="id_barang" class="form-control" id="id_barang" placeholder="Masukkan ID Produk" autofocus>
+                  <input type="text" name="id_barang" class="form-control" id="id_barang" placeholder="Masukkan ID Barang" autofocus>
                 </div>
                 <?php flash(); ?>
               </form>
@@ -214,8 +224,8 @@ if (isset($_POST['trx'])) {
                 <form action="<?php echo BASEURL ?>/penjualan" method="post" novalidate>
                   <div class="mb-3">
                     <label class="form-label">Nama Pelanggan</label>
-                    <select class="form-select" id="nama_pelanggan" name="id_pelanggan" required>
-                      <option value="" option hidden disabled selected value>Pilih nama pelanggan</option>
+                    <select class="form-select <?php echo isset($errors['id_pelanggan']) ? 'is-invalid' : '' ?>" id="nama_pelanggan" name="id_pelanggan" required>
+                      <option value="" hidden selected>Pilih nama pelanggan</option>
                       <?php foreach ($customers as $b) { ?>
                         <option value="<?php echo $b['id_pelanggan']; ?>">
                           <?php echo $b['nama']; ?>
@@ -238,7 +248,7 @@ if (isset($_POST['trx'])) {
                   </div>
                   <div class="mb-3">
                     <label class="form-label" for="bayar">Bayar</label>
-                    <input type="text" id="bayar" name="bayar" class="form-control" min="1" required>
+                    <input type="text" id="bayar" name="bayar" class="form-control <?php echo isset($errors['bayar']) ? 'is-invalid' : '' ?>" min="1" required>
                     <small class="text-danger" id="msg2"> </small>
                     <div class="invalid-feedback">
                       <?php echo $errors['bayar'] ?? '' ?>

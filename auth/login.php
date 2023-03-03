@@ -1,13 +1,10 @@
 <?php
 require __DIR__ . '/function.php';
-
 session_start();
 
 
-
-
 if (isset($_SESSION['id_role']) && isset($_SESSION["login"])) {
-  if ($_SESSION['id_role'] === 1 || $_SESSION['id_role'] === 2 && $_SESSION["login"] === true) {
+  if ($_SESSION['id_role'] == 1 || $_SESSION['id_role'] == 2 && $_SESSION["login"] == true) {
     header('Location: ' . BASEURL . '/dashboard');
     exit;
   }
@@ -15,51 +12,58 @@ if (isset($_SESSION['id_role']) && isset($_SESSION["login"])) {
 
 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$username = '';
-$password = '';
+  $username = htmlspecialchars(trim($_POST['username']));
+  $password = htmlspecialchars(trim($_POST['password']));
 
-if (isset($_POST["login"])) {
-  $username = htmlspecialchars($_POST['username']);
-  $password = htmlspecialchars($_POST['password']);
-  if (!$username) {
-    $errors['username'] = REQUIRED_FIELD_ERROR;
+  if (empty($username)) {
+    $errors['username'] = "Username wajib diisi";
+    $s['kosong'] = true;
+  }
+  if (empty($password)) {
+    $errors['password'] = "Password wajib diisi";
+    $s['kosong'] = true;
   }
 
-  if (!$password) {
-    $errors['password'] = REQUIRED_FIELD_ERROR;
-  }
-  $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
-  if (mysqli_num_rows($result) === 1) {
-    $row = mysqli_fetch_assoc($result);
-    if (password_verify($password, $row["password"])) {
-      if ($row['id_role'] == 1) {
 
-        $_SESSION["login"] = true;
-        $_SESSION["id_user"] = $row['id_user'];
-        $_SESSION["username"] = $row['username'];
-        $_SESSION['id_role'] = 1;
-        $_SESSION['role'] = "admin";
-        header('Location: ' . BASEURL . '/dashboard');
-      } elseif ($row['id_role'] == 2) {
+  if (is_array($s['kosong'])) {
+    if ($s['kosong'] == false) {
+      $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+      if (mysqli_num_rows($result) === 1) {
+        $row = mysqli_fetch_assoc($result);
+        if (password_verify($password, $row["password"])) {
+          if ($row['id_role'] == 1) {
 
-        $_SESSION["login"] = true;
-        $_SESSION["id_user"] = $row['id_user'];
-        $_SESSION["username"] = $row['username'];
-        $_SESSION['id_role'] = 2;
-        $_SESSION['role'] = "kasir";
-        header('Location: ' . BASEURL . '/dashboard');
+            $_SESSION["login"] = true;
+            $_SESSION["id_user"] = $row['id_user'];
+            $_SESSION["username"] = $row['username'];
+            $_SESSION['id_role'] = 1;
+            $_SESSION['role'] = "admin";
+            header('Location: ' . BASEURL . '/dashboard');
+          } elseif ($row['id_role'] == 2) {
+
+            $_SESSION["login"] = true;
+            $_SESSION["id_user"] = $row['id_user'];
+            $_SESSION["username"] = $row['username'];
+            $_SESSION['id_role'] = 2;
+            $_SESSION['role'] = "kasir";
+            header('Location: ' . BASEURL . '/dashboard');
+          } else {
+            session_destroy();
+            header('Location: ' . BASEURL . '/auth/login');
+          }
+        } else {
+          setFlash('Gagal ', 'login.', 'danger', ' Isi password dengan benar !');
+        }
       } else {
-        session_destroy();
-        header('Location: ' . BASEURL . '/auth/login');
+        setFlash('Gagal ', 'login.', 'danger', ' Isi username dengan benar !');
       }
-    } else {
-      setFlash('Gagal', 'login.', 'danger', ' Isi password dengan benar !');
     }
-  } else {
-    setFlash('Gagal', 'login.', 'danger', ' Isi username dengan benar !');
   }
 }
+
+
 
 
 
@@ -91,9 +95,11 @@ if (isset($_POST["login"])) {
                   <?php flash(); ?>
                 </div>
                 <div class="card-body">
-                  <form action="<?php echo BASEURL; ?>/auth/login" method="post">
+                  <form action="<?php echo BASEURL; ?>/auth/login" method="post" novalidate>
                     <div class="form-floating mb-3">
-                      <input class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>" id="username" type="text" name="username" required>
+                      <input class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>" id="username" type="text" name="username" <?php if (isset($_POST['username'])) {
+                                                                                                                                                            echo 'value="' . $_POST['username'] . '"';
+                                                                                                                                                          } ?> required>
                       <label class="form-label" for="username">Username</label>
                       <div class="invalid-feedback">
                         <?php echo $errors['username'] ?? '' ?>
@@ -106,17 +112,16 @@ if (isset($_POST["login"])) {
                         <?php echo $errors['password'] ?? '' ?>
                       </div>
                     </div>
-
-
                     <div class="mt-4">
                       <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-block" name="login">Login</button>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
                       </div>
                     </div>
                   </form>
+
                 </div>
                 <div class="card-footer text-center py-3">
-                  <div class="small">Belum punya akun ? <a href="<?php echo BASEURL; ?>/auth/register"> Daftar </a></div>
+                  <div class="small">Belum punya akun ? <a href="<?php echo BASEURL; ?>/auth/registrasi"> Daftar </a></div>
                 </div>
               </div>
             </div>
@@ -127,18 +132,7 @@ if (isset($_POST["login"])) {
 
     <script src="<?php echo BASEURL; ?>/assets/js/jquery-3.4.1.js"></script>
     <script src="<?php echo BASEURL; ?>/assets/js/bootstrap.bundle.min.js"></script>
-    <script>
-      /* To Disable Inspect Element */
-      $(document).bind("contextmenu", function(e) {
-        e.preventDefault();
-      });
 
-      $(document).keydown(function(e) {
-        if (e.which === 123) {
-          return false;
-        }
-      });
-    </script>
   </div>
 </body>
 
