@@ -14,9 +14,9 @@ $satuans = query("SELECT * FROM  satuan order by id_satuan ASC");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $nama = mysqli_escape_string($conn, htmlspecialchars($_POST["nama"]));
-  $harga = mysqli_escape_string($conn, htmlspecialchars($_POST["harga"]));
-  $id_satuan = mysqli_escape_string($conn, htmlspecialchars($_POST["id_satuan"]));
-  $id_kategori = mysqli_escape_string($conn, htmlspecialchars($_POST["id_kategori"]));
+  $harga = htmlspecialchars(abs((int)$_POST["harga"]));
+  $id_satuan = htmlspecialchars($_POST["id_satuan"]);
+  $id_kategori = htmlspecialchars($_POST["id_kategori"]);
 
 
 
@@ -66,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Kategori Barang - Aplikasi POS</title>
+  <title>Kategori Barang - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

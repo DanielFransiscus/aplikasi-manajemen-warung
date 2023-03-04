@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/function.php';
+require 'function.php';
 if ($status == true && $id_role != 1 && $id_role != 2) {
   header('Location: ' . BASEURL . '/auth/login');
 }
@@ -33,9 +33,9 @@ $transaksi = query("SELECT * FROM transaksi
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Laporan Penjualan - Aplikasi POS</title>
+  <title>Laporan Penjualan - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

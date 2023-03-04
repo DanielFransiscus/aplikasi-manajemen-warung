@@ -10,8 +10,8 @@ if ($status == true && $id_role != 1) {
 $barangs = query("SELECT * FROM  barang order by id_barang ASC");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $id_barang = mysqli_escape_string($conn, htmlspecialchars($_POST["id_barang"]));
-  $jumlah = mysqli_escape_string($conn, htmlspecialchars($_POST["jumlah"]));
-  $tanggal = mysqli_escape_string($conn, htmlspecialchars(date("Y-m-d H:i:s")));
+  $jumlah = htmlspecialchars(abs((int)$_POST["jumlah"]));
+  $tanggal = date("Y-m-d H:i:s");
 
   if (empty($id_barang)) {
     $errors['id_barang'] = "Nama barang wajib diisi";
@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($s['kosong'] == false) {
       $sql = "INSERT INTO barang_masuk ( id_barang, jumlah, tgl_msk) 
       VALUES ($id_barang, '$jumlah', '$tanggal')";
+
+
       if (mysqli_query($conn, $sql)) {
         setFlash('berhasil', 'ditambahkan', 'success');
         header('Location: ' . BASEURL . '/stok-masuk');
@@ -52,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Satuan Barang - Aplikasi POS</title>
+  <title>Satuan Barang - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

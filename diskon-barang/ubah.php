@@ -37,10 +37,10 @@ if (isset($_GET['id'])) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id_diskon = mysqli_escape_string($conn, htmlspecialchars($_POST["id_diskon"]));
-  $id_barang = mysqli_escape_string($conn, htmlspecialchars($_POST["id_barang"]));
-  $qty =  mysqli_escape_string($conn, htmlspecialchars($_POST["qty"]));
-  $potongan =  mysqli_escape_string($conn, htmlspecialchars($_POST["potongan"]));
+  $id_diskon = htmlspecialchars($_POST["id_diskon"]);
+  $id_barang = htmlspecialchars($_POST["id_barang"]);
+  $qty =  htmlspecialchars(abs((int)$_POST["qty"]));
+  $potongan =  htmlspecialchars(abs((int)$_POST["potongan"]));
 
 
   if (empty($id_barang)) {
@@ -85,9 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Diskon Barang - Aplikasi POS</title>
+  <title>Diskon Barang - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

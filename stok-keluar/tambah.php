@@ -7,11 +7,13 @@ if ($status == true && $id_role != 1) {
 }
 
 
+
 $barangs = query("SELECT * FROM  barang order by id_barang ASC");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id_barang = mysqli_escape_string($conn, htmlspecialchars($_POST["id_barang"]));
-  $jumlah = mysqli_escape_string($conn, htmlspecialchars($_POST["jumlah"]));
-  $tanggal = mysqli_escape_string($conn, htmlspecialchars(date("Y-m-d H:i:s")));
+  $id_barang = htmlspecialchars($_POST["id_barang"]);
+  $jumlah = abs((int)$_POST["jumlah"]);
+  $tanggal = date("Y-m-d H:i:s");
+
 
   if (empty($id_barang)) {
     $errors['id_barang'] = "Nama barang wajib diisi";
@@ -22,13 +24,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $s['kosong'] = true;
   }
 
+  $data = mysqli_query($conn, "SELECT * FROM barang WHERE id_barang='$id_barang'");
+  $b = mysqli_fetch_assoc($data);
+  $stok = abs((int)$b['stok']);
 
-
+  $total  = $stok - $jumlah;
 
   if (is_array($s['kosong'])) {
     if ($s['kosong'] == false) {
       $sql = "INSERT INTO barang_keluar ( id_barang, jumlah, tgl_keluar) 
       VALUES ($id_barang, '$jumlah', '$tanggal')";
+
+
+      if ($total < 0) {
+        setFlash('Gagal mengeluarkan barang karena karena stok saat ini tidak boleh minus', '', 'danger');
+        header('Location: ' . BASEURL . '/stok-keluar');
+        die();
+      }
+
       if (mysqli_query($conn, $sql)) {
         setFlash('berhasil', 'ditambahkan', 'success');
         header('Location: ' . BASEURL . '/stok-keluar');
@@ -52,9 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Satuan Barang - Aplikasi POS</title>
+  <title>Satuan Barang - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

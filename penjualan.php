@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/function.php';
+require 'function.php';
 if ($status == true && $id_role != 1 && $id_role != 2) {
   header('Location: ' . BASEURL . '/auth/login');
 }
@@ -18,10 +18,9 @@ if (isset($_SESSION['cart'])) {
 $bayar = $total =  $id_user = $id_pelanggan = '';
 // transaksi_act
 if (isset($_POST['trx'])) {
-
-  $ind_timezone = htmlspecialchars(date("Y-m-d H:i:s"));
-  $bayar = htmlspecialchars($_POST['bayar']);
-  $total = htmlspecialchars($_POST['total']);
+  $ind_timezone = date("Y-m-d H:i:s");
+  $bayar = htmlspecialchars(abs((int)$_POST['bayar']));
+  $total = htmlspecialchars(abs((int)$_POST['total']));
   $namaku = htmlspecialchars($_SESSION['username']);
   $id_user = $_SESSION['id_user'];
   $id_pelanggan  = htmlspecialchars($_POST['id_pelanggan']);
@@ -52,18 +51,18 @@ if (isset($_POST['trx'])) {
     $jumlah = $value['qty'];
 
     if ($stok <= 0 && $jumlah >= $stok) {
-      echo '<script>alert("Stock tidak mencukupi");
-      window.location=' . BASEURL . '/penjualan' . '</script>';
+      setFlash('Gagal. ', 'Stok tidak mencukupi', 'danger');
+      header('Location: ' . BASEURL . '/penjualan');
       die();
     }
   }
 
-
-
   if (is_array($s['kosong'])) {
     if ($s['kosong'] == false) {
       if ($bayar < $total) {
-        echo '<script>alert("Uang pelanggan tidak cukup");  window.history.back();</script>';
+        setFlash('Gagal. ', 'Uang pelanggan tidak mencukupi', 'danger');
+        header('Location: ' . BASEURL . '/penjualan');
+        die();
       } else {
         $sql = "INSERT INTO transaksi (id_transaksi, id_pelanggan, id_user, tgl_wkt, total, bayar, kembali) VALUES (NULL,'$id_pelanggan','$id_user', '$ind_timezone', '$total', '$bayar', '$kembali')";
 
@@ -113,9 +112,9 @@ if (isset($_POST['trx'])) {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Aplikasi Aplikasi POS">
+  <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="Daniel Fransiscus">
-  <title>Kasir - Aplikasi POS</title>
+  <title>Kasir - Kasir</title>
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
 

@@ -51,7 +51,7 @@ function flash()
 {
   if (isset($_SESSION['flash'])) {
     echo '<div class="alert alert-' . $_SESSION['flash']['tipe'] . ' alert-dismissible fade show" role="alert">
-		Data ' . $_SESSION['flash']['pesan'] . ' ' . $_SESSION['flash']['aksi'] . '
+		' . $_SESSION['flash']['pesan'] . ' ' . $_SESSION['flash']['aksi'] . '
 		</div>';
     unset($_SESSION['flash']);
   }

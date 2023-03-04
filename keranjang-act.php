@@ -16,7 +16,10 @@ if (isset($_POST['id_barang'])) {
   $data = mysqli_query($conn, "SELECT * FROM barang WHERE id_barang='$id_barang'");
   $b = mysqli_fetch_assoc($data);
   $ids = $b['id_barang'];
-  $jumlah = $b['stok'];
+  $jumlah = abs((int)$b['stok']);
+
+
+
   if ($jumlah > 0 && !empty($jumlah) && $id_barang == $ids) {
     //cek diskon barang
     $disbarang = mysqli_query($conn, "SELECT * FROM disbarang WHERE id_barang=$id_barang");
@@ -59,7 +62,7 @@ if (isset($_POST['id_barang'])) {
 
     header('Location: ' . BASEURL . '/penjualan');
   } else {
-    setFlash('gagal', 'ditambahkan', 'danger');
+    setFlash('Gagal', 'ditambahkan', 'danger');
     header('Location: ' . BASEURL . '/penjualan');
   }
 }

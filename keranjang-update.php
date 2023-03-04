@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/function.php';
+require 'function.php';
 if ($status == true && $id_role != 1 && $id_role != 2) {
   header('Location: ' . BASEURL . '/auth/login');
 }
