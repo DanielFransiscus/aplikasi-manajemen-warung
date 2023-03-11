@@ -1,17 +1,13 @@
 <?php
-
 session_start();
-
 require 'function.php';
 if ($status == true && $id_role != 1 && $id_role != 2) {
   header('Location: ' . BASEURL . '/auth/login');
 }
-
 if (isset($_POST['submit'])) {
   $date1 = htmlspecialchars($_POST['tgl_awal']);
   $date2 = htmlspecialchars($_POST['tgl_akhir']);
   $transaksi = query("SELECT * FROM transaksi
-
 		inner join users ON transaksi.id_user=users.id_user
 		inner join pelanggan ON transaksi.id_pelanggan=pelanggan.id_pelanggan
 		WHERE DATE(tgl_wkt)
@@ -19,16 +15,10 @@ if (isset($_POST['submit'])) {
 		ORDER BY DATE(tgl_wkt) ASC, id_transaksi ASC
 		");
 }
-
 $date = date('d-m-Y');
-
 header("Content-type: application/vnd-ms-excel");
 header("Content-Disposition: attachment; filename=" . "list-transaksi_" . "$date" . ".xls");
-
 ?>
-
-
-
 <!DOCTYPE html>
 <html>
 
@@ -45,9 +35,7 @@ header("Content-Disposition: attachment; filename=" . "list-transaksi_" . "$date
 </style>
 
 <body>
-
   <br>
-
   <table border="1">
     <thead>
       <th align="left">No</th>
@@ -60,7 +48,6 @@ header("Content-Disposition: attachment; filename=" . "list-transaksi_" . "$date
       <th align="left">Kembali</th>
       </tr>
     </thead>
-
     <tbody>
       <?php $i = 1; ?>
       <?php foreach ($transaksi as $b) { ?>
@@ -75,11 +62,9 @@ header("Content-Disposition: attachment; filename=" . "list-transaksi_" . "$date
           <td align="left"><?php echo htmlentities($b['kembali']); ?></td>
         </tr>
         <?php $i++; ?>
-
       <?php } ?>
     </tbody>
   </table>
-
 </body>
 
 </html>

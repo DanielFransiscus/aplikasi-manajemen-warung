@@ -1,24 +1,16 @@
 <?php
-
 session_start();
-
 require  '../function.php';
 if ($status == true && $id_role != 1) {
   header('Location: ' . BASEURL . '/auth/login');
 }
-
-
 $p = "SELECT * FROM  profil where id = 1";
 $result = mysqli_query($conn, $p);
 $row = mysqli_fetch_assoc($result);
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $nama_warung = mysqli_escape_string($conn, htmlspecialchars($_POST["nama_warung"]));
   $alamat = mysqli_escape_string($conn, htmlspecialchars($_POST["alamat"]));
   $kontak = mysqli_escape_string($conn, htmlspecialchars($_POST["kontak"]));
-
   if (empty($nama_warung)) {
     $errors['nama_warung'] = "Nama warung wajib diisi";
     $s['kosong'] = true;
@@ -31,9 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors['kontak'] = "Kontak warung wajib diisi";
     $s['kosong'] = true;
   }
-
-
-
   if (is_array($s['kosong'])) {
     if ($s['kosong'] == false) {
       $sql = "UPDATE profil SET nama_warung = '$nama_warung', alamat = '$alamat', kontak = '$kontak' WHERE id = 1";
@@ -49,13 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
-
-
-
-
-
 ?>
-
 
 
 <!DOCTYPE html>
@@ -68,14 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="description" content="Aplikasi  Kasir">
   <meta name="author" content="">
   <title>Profil Warung - Kasir</title>
-  <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/datatables.css">
   <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/assets/css/styles.css">
-
 </head>
 
 <body class="sb-nav-fixed">
-
-
   <?php include '../partials/top_nav.php'; ?>
   <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
@@ -84,19 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="layoutSidenav_content">
       <main>
         <div class="container-fluid px-4">
-          <!-- awal -->
-
-
-
           <div class="row justify-content-center mt-4 mb-4 border">
             <div class="col-md-6">
               <?php echo flash(); ?>
               <h1 class="mt-3 mb-4 text-center">Profil Warung</h1>
-
-
               <form action="<?php echo BASEURL; ?>/profil-warung/" method="post" novalidate>
-                <!-- Modal body -->
-
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="nama_warung">Nama </label>
                   <div class="col-sm-10">
@@ -106,10 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                   </div>
                 </div>
-
-
-
-
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="alamat">Alamat</label>
                   <div class="col-sm-10">
@@ -119,11 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                   </div>
                 </div>
-
-
-
-
-
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="kontak">Kontak</label>
                   <div class="col-sm-10">
@@ -133,38 +95,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                   </div>
                 </div>
-
-
                 <div class="row justify-content-center">
                   <div class="col-md-12 mb-4">
                     <button type="submit" class="btn btn-primary ms-2 float-end">Ubah</button>
                   </div>
                 </div>
-
-
-
             </div>
-            <!-- Modal footer -->
-
             </form>
           </div>
         </div>
-
-
-
-
-
     </div>
-    </main>
   </div>
-  </div>
-
   <script src="<?php echo BASEURL; ?>/assets/js/jquery-3.4.1.js"></script>
   <script src="<?php echo BASEURL; ?>/assets/js/fontawesome.js"></script>
   <script src="<?php echo BASEURL; ?>/assets/js/bootstrap.bundle.min.js"></script>
   <script src="<?php echo BASEURL; ?>/assets/js/scripts.js"></script>
-  <script src="<?php echo BASEURL; ?>/assets/js/datatables.js"></script>
-  <script src="<?php echo BASEURL; ?>/assets/js/datatables-simple-demo.js"></script>
   <script>
     window.setTimeout(function() {
       $(".alert").fadeTo(300, 0).slideUp(500, function() {
