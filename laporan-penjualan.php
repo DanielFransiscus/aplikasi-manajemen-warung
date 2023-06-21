@@ -90,17 +90,21 @@ $transaksi = query("SELECT * FROM transaksi
                     </td>
 
                     <td>
-                      <?php echo htmlentities($b['bayar']); ?>
+                      <?php echo htmlentities('Rp ' . number_format($b['bayar'], 2, ',', '.')); ?>
                     </td>
                     <td>
-                      <?php echo htmlentities($b['total']); ?>
+                      <?php echo htmlentities('Rp ' . number_format($b['total'], 2, ',', '.')); ?>
                     </td>
                     <td>
-                      <?php echo htmlentities($b['kembali']); ?>
+                      <?php echo htmlentities('Rp ' . number_format($b['kembali'], 2, ',', '.')); ?>
                     </td>
+
+
                     <td>
-                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?php echo htmlentities($b['id_transaksi']); ?>">Hapus</button>
-                      <a class="btn btn-secondary" href="<?php echo BASEURL; ?>/transaksi-selesai?idtrx=<?php echo htmlentities($b['id_transaksi']); ?>">Lihat</a>
+                      <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#delete<?php echo htmlentities($b['id_transaksi']); ?>">Hapus</button>
+                      <a class="btn btn-secondary"
+                        href="<?php echo BASEURL; ?>/transaksi-selesai?idtrx=<?php echo htmlentities($b['id_transaksi']); ?>">Lihat</a>
                     </td>
                   </tr>
                   <?php $i++; ?>
@@ -114,7 +118,8 @@ $transaksi = query("SELECT * FROM transaksi
                         <form action="<?php echo BASEURL; ?>/laporan-penjualan" method="post">
                           <div class="modal-body">
                             <p>Apakah anda yakin menghapus transaksi ini ?</p>
-                            <input type="hidden" name="id_transaksi" value="<?php echo htmlentities($b['id_transaksi']); ?>">
+                            <input type="hidden" name="id_transaksi"
+                              value="<?php echo htmlentities($b['id_transaksi']); ?>">
                           </div>
                           <div class="modal-footer">
                             <button type="submit" name="delete" class="btn btn-danger">Hapus</button>
@@ -138,8 +143,8 @@ $transaksi = query("SELECT * FROM transaksi
   <script src="<?php echo BASEURL; ?>/assets/js/datatables.js"></script>
   <script src="<?php echo BASEURL; ?>/assets/js/datatables-simple-demo.js"></script>
   <script>
-    window.setTimeout(function() {
-      $(".alert").fadeTo(300, 0).slideUp(500, function() {
+    window.setTimeout(function () {
+      $(".alert").fadeTo(300, 0).slideUp(500, function () {
         $(this).remove();
       });
     }, 2000);

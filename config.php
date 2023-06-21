@@ -7,7 +7,7 @@ $errors = [];
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "kasirdb";
+$database = "db_kasir";
 $conn = mysqli_connect($servername, $username, $password, $database);
 if (!$conn) {
   exit();

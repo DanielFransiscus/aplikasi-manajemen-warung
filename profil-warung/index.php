@@ -4,7 +4,7 @@ require  '../function.php';
 if ($status == true && $id_role != 1) {
   header('Location: ' . BASEURL . '/auth/login');
 }
-$p = "SELECT * FROM  profil where id = 1";
+$p = "SELECT * FROM  profil";
 $result = mysqli_query($conn, $p);
 $row = mysqli_fetch_assoc($result);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   if (is_array($s['kosong'])) {
     if ($s['kosong'] == false) {
-      $sql = "UPDATE profil SET nama_warung = '$nama_warung', alamat = '$alamat', kontak = '$kontak' WHERE id = 1";
+      $sql = "UPDATE profil SET nama_warung = '$nama_warung', alamat = '$alamat', kontak = '$kontak'";
       if (mysqli_query($conn, $sql)) {
         setFlash('berhasil', 'diubah', 'success');
         header('Location: ' . BASEURL . '/profil-warung');

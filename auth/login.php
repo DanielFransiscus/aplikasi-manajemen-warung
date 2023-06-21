@@ -97,16 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                   <form action="<?php echo BASEURL; ?>/auth/login" method="post" novalidate>
                     <div class="form-floating mb-3">
-                      <input class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>" id="username" type="text" name="username" <?php if (isset($_POST['username'])) {
-                                                                                                                                                            echo 'value="' . $_POST['username'] . '"';
-                                                                                                                                                          } ?> required>
+                      <input class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>"
+                        id="username" type="text" name="username" <?php if (isset($_POST['username'])) {
+                          echo 'value="' . $_POST['username'] . '"';
+                        } ?> required>
                       <label class="form-label" for="username">Username</label>
                       <div class="invalid-feedback">
                         <?php echo $errors['username'] ?? '' ?>
                       </div>
                     </div>
                     <div class="form-floating mb-3">
-                      <input class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : '' ?>" id="password" type="password" name="password" required>
+                      <input class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : '' ?>"
+                        id="password" type="password" name="password" required>
                       <label class="form-label" for="password">Password</label>
                       <div class="invalid-feedback">
                         <?php echo $errors['password'] ?? '' ?>
@@ -121,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 </div>
                 <div class="card-footer text-center py-3">
-                  <div class="small">Belum punya akun ? <a href="<?php echo BASEURL; ?>/auth/registrasi"> Daftar </a></div>
+                  <div class="small">Belum punya akun ? <a href="<?php echo BASEURL; ?>/auth/registrasi"> Daftar </a>
+                  </div>
                 </div>
               </div>
             </div>

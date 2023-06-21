@@ -14,7 +14,7 @@ if (!isset($_GET['idtrx']) || $_GET['idtrx'] == "") {
     $data = mysqli_query($conn, "SELECT * FROM transaksi WHERE id_transaksi='$id_trx'");
     $trx = mysqli_fetch_assoc($data);
     $detail = mysqli_query($conn, "SELECT * FROM transaksi_detail INNER JOIN barang ON transaksi_detail.id_barang = barang.id_barang WHERE transaksi_detail.id_transaksi = '$id_trx'");
-    $p = "SELECT * FROM  profil where id = 1";
+    $p = "SELECT * FROM  profil";
     $result = mysqli_query($conn, $p);
     $q = mysqli_fetch_assoc($result);
     if (!is_array($trx)) {

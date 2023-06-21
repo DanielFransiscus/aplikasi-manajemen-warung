@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
 } else {
   http_response_code(400);
   echo "<h1><center>Id is required</center></h1>";
-  exit()();
+  exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

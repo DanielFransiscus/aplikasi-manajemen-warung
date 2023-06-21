@@ -21,6 +21,11 @@ if (isset($_POST['id_barang'])) {
     if ($key !== false) {
       //jika ada data yang sesuai di keranjang akan ditambahkan jumlah nya
       $c_qty = $_SESSION['cart'][$key]['qty'];
+      if ($c_qty + 1 > $jumlah) {
+        setFlash('Gagal', 'Jumlah barang melebihi stok yang tersedia', 'danger');
+        header('Location: ' . BASEURL . '/penjualan');
+        exit();
+      }
       $_SESSION['cart'][$key]['qty'] = $c_qty + 1;
       //cek jika ada potongan dan cek jumlah barang lebih besar sama dengan minimum order potongan
       if ($disb['qty'] && $_SESSION['cart'][$key]['qty'] == $disb['qty']) {
@@ -34,7 +39,6 @@ if (isset($_POST['id_barang'])) {
         'harga' => $b['harga_barang'],
         'qty' => $qty,
         'diskon' => 0,
-
       ];
       $_SESSION['cart'][] = $barang;
     }
